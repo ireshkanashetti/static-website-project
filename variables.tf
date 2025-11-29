@@ -11,7 +11,7 @@ variable "ami_id" {
 }
 
 variable "key_name" {
-  default = "jenkins"
+  default = "jenkin"
 }
 
 variable "jarvis_repo_url" {
