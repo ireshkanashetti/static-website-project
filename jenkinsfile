@@ -16,24 +16,21 @@ pipeline {
             }
         }
 
-        stage('Deploy to Nginx Server') {
-            steps {
-                sshagent(credentials: ["${SSH_CRED}"]) {
-                    sh '''
-                        echo "🧹 Cleaning old website files..."
-                        ssh -o StrictHostKeyChecking=no ${REMOTE_USER}@${SERVER_IP} "sudo rm -rf ${WEB_DIR}/*"
+       stage('Deploy to Nginx Server') {
+    sshagent(['node-app-key']) {
+        sh '''
+            echo "🧹 Cleaning old website files..."
+            ssh -o StrictHostKeyChecking=no ubuntu@${SERVER_IP} sudo rm -rf /var/www/html/*
 
-                        echo "📤 Uploading new website files to server..."
-                        scp -o StrictHostKeyChecking=no -r * ${REMOTE_USER}@${SERVER_IP}:/tmp/
+            echo "📤 Uploading new website files to server..."
+            scp -o StrictHostKeyChecking=no -r * ubuntu@${SERVER_IP}:/tmp/
 
-                        echo "📦 Moving website files to Nginx directory..."
-                        ssh -o StrictHostKeyChecking=no ${REMOTE_USER}@${SERVER_IP} "sudo cp -r /tmp/* ${WEB_DIR}/"
+            echo "📦 Moving website files to Nginx directory..."
+            ssh -o StrictHostKeyChecking=no ubuntu@${SERVER_IP} sudo cp -r /tmp/* /var/www/html/
+        '''
+    }
+}
 
-                        echo "🔁 Restarting Nginx..."
-                        ssh -o StrictHostKeyChecking=no ${REMOTE_USER}@${SERVER_IP} "sudo systemctl restart nginx"
-                    '''
-                }
-            }
         }
     }
 
