@@ -24,7 +24,7 @@ pipeline {
             ssh -o StrictHostKeyChecking=no ubuntu@${SERVER_IP} sudo rm -rf /var/www/html/*
 
             echo "📤 Uploading new website files to server..."
-           ssh -o StrictHostKeyChecking=no ubuntu@13.60.26.172 "sudo cp -r /tmp/*.html /tmp/*.css /var/www/html/"
+          scp -o StrictHostKeyChecking=no *.html *.css ubuntu@${SERVER_IP}:/tmp/var/www/html/"
 
 
             echo "📦 Moving website files to Nginx directory..."
